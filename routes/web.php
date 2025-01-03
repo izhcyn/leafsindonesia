@@ -67,11 +67,13 @@ Route::post('/cart/updateQuantity', [ShopCartController::class, 'updateQuantity'
 Route::middleware(['role:admin'])->group(function () {
     Route::get('/admin/add-product', [ProductController::class, 'create'])->name('add.product');
     Route::post('/admin/add-product', [ProductController::class, 'store'])->name('store.product');
+    Route::get('/admin/listproduct',  [ProductController::class, 'showProduct']) ->name('listproduct');
+    Route::get('admin/edit-product', [ProductController::class, 'EditProduk'])->name('edit.product');
+    Route::get('/admin/genus', [ProductController::class, 'listGenus'])->name('genus');
     Route::get('/weldone', function () {
         return view('weldone');
     })->name('weldone');
 });
-
 Route::get('/update-cart-total-items', function () {
     $totalItems = session('cart_total_items', 0);
     return response()->json(['total_items' => $totalItems]);

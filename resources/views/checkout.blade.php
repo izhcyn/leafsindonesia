@@ -279,6 +279,7 @@
                 @endforeach
             </ul>
         </div>
+
         <div class="mb-3">
             <label for="whatsapp_number" class="form-label">WhatsApp Number</label>
             <input type="text" class="form-control" id="whatsapp_number" name="whatsapp_number" required>

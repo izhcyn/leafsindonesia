@@ -7,9 +7,9 @@
            <a href="{{ route('weldone') }}" class="btn py-1 px-4 text-dark"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
               <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
             </svg> <span> Kembali ke Menu </span></a>
-        </div>
+        </div>  
      </div>
-    <h1>Tambah Produk</h1>
+    <h1>Edit Produk</h1>
     <form action="{{ route('store.product') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="my-3">
@@ -35,9 +35,9 @@
                     <input type="file" class="form-control" id="image" name="image" required>
                 </div>
             </div>
-
+            
         </div>
-
+       
         <div class="mb-3">
             <label for="genus" class="form-label fw-bold">Genus</label>
             <input type="text" class="form-control" id="genus" name="genus" maxlength="100" required>
@@ -56,9 +56,9 @@
         <div class="mb-3">
             <label for="deskripsi" class="form-label fw-bold">Deskripsi</label>
   <textarea class="form-control" id="deskripsi" name="deskripsi" maxlength="255" required rows="3"></textarea>
-
+          
         </div>
-
+        
         <div class="mb-3">
             <label for="harga" class="form-label fw-bold">Harga</label>
             <input type="number" class="form-control" id="harga" name="harga" required>

@@ -34,7 +34,7 @@
                      <p class="fw-bold">${{ $item->price }}</p>
                      <div class="d-flex align-items-center">
                         <button class="btn btn-sm btn-outline-secondary qty-decrease text-dark">-</button>
-                        <input type="number" class="form-control text-center mx-2" style="width: 50px;" value="{{ $item->quantity }}">
+                        <input type="number" class="form-control text-center mx-2 quantity-input" style="width: 50px;" value="{{ $item->quantity }}">
                         <button class="btn btn-sm btn-outline-secondary qty-increase text-dark">+</button>
                      </div>
                   </div>
@@ -113,54 +113,55 @@
 
 
 <script>
-document.querySelectorAll('.qty-increase, .qty-decrease').forEach(function (button) {
-    button.addEventListener('click', function () {
-        const isIncrease = this.classList.contains('qty-increase');
-        const cartItemId = this.dataset.cartItemId; // Pastikan ada data ID di tombol
-        const quantityInput = this.closest('.cart-item').querySelector('.quantity-input');
-        let quantity = parseInt(quantityInput.value);
+document.querySelectorAll('.qty-increase, .qty-decrease').forEach(function(button) {
+  button.addEventListener('click', function() {
+    const isIncrease = this.classList.contains('qty-increase');
+    const cartItemId = this.dataset.cartItemId; // Ensure you have data-cart-item-id on buttons
+    const quantityInput = this.closest('.cart-item').querySelector('.quantity-input');
+    let quantity = parseInt(quantityInput.value);
 
-        // Update kuantitas berdasarkan tombol yang ditekan
-        if (isIncrease) {
-            quantity++;
+    // Update quantity based on button clicked
+    if (isIncrease) {
+      quantity++;
+    } else {
+      quantity--;
+    }
+
+    // Validation (quantity cannot be less than 1)
+    if (quantity < 1) {
+      alert('Quantity cannot be less than 1');
+      return;
+    }
+
+    // Update database through AJAX (replace with your actual update route)
+    fetch("{{ route('cart.updateQuantity', $item->id) }}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+      },
+      body: JSON.stringify({
+        id: cartItemId,
+        quantity: quantity,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          // Update UI if successful
+          quantityInput.value = quantity;
+          // Update subtotal and total based on the data returned from the server
+          this.closest('.cart-item').querySelector('.subtotal').innerText = `$${data.subTotal}`;
+          document.querySelector('.total-price').innerText = `$${data.total}`;
         } else {
-            quantity--;
+          alert(data.message || ' Failed to update cart');
         }
-
-        // Validasi kuantitas (tidak boleh kurang dari 1)
-        if (quantity < 1) {
-            alert('Quantity cannot be less than 1');
-            return;
-        }
-
-        // Kirim permintaan AJAX ke server
-        fetch("{{ route('cart.updateQuantity') }}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            },
-            body: JSON.stringify({
-                id: cartItemId,
-                quantity: quantity,
-            }),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.success) {
-                    // Update UI jika berhasil
-                    quantityInput.value = quantity;
-                    this.closest('.cart-item').querySelector('.subtotal').innerText = `$${data.subTotal}`;
-                    document.querySelector('.total-price').innerText = `$${data.total}`;
-                } else {
-                    alert(data.message || 'Failed to update cart');
-                }
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert('Something went wrong. Please try again.');
-            });
-    });
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        alert('Something went wrong. Please try again.');
+      });
+  });
 });
  </script>
 

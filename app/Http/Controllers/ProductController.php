@@ -18,9 +18,21 @@ class ProductController extends Controller
         return view('allproducts', compact('produks', 'genusList'));
     }
 
+    public function showProduct(){
+        return view('listproduct');
+    }
+
     public function create()
     {
         return view('add-product'); // Pastikan ada file view 'add-product'
+    }
+
+    public function listGenus(){
+        return view('genus');
+    }
+
+    public function EditProduk()  {
+        return view('edit-product');
     }
 
     public function store(Request $request)
