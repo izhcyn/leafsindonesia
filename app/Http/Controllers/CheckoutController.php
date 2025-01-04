@@ -26,44 +26,39 @@ class CheckoutController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi input
-        $validated = $request->validate([
-            'full_name' => 'required|string|max:255',
-            'address' => 'required|string',
-            'recipient_name' => 'required|string|max:255',
-            'recipient_address' => 'required|string',
-            'recipient_phone' => 'required|string|max:15',
-            'country' => 'required|string',
-            'products' => 'required|array',
-            'products.*' => 'exists:carts,id',
-            'whatsapp_number' => 'required|string|max:15',
-        ]);
-        // Buat pesanan baru
+        $selectedItems = $request->input('selectedItems');
+
+        if (empty($selectedItems)) {
+            return response()->json(['success' => false, 'message' => 'No items selected'], 400);
+        }
+
+        $cartItems = \DB::table('cart')
+            ->where('user_id', auth()->id())
+            ->whereIn('id', $selectedItems)
+            ->get();
+
         $order = Order::create([
             'user_id' => auth()->id(),
-            'recipient_name' => $validated['recipient_name'],
-            'recipient_address' => $validated['recipient_address'],
-            'recipient_phone' => $validated['recipient_phone'],
-            'country' => $validated['country'],
-            'whatsapp_number' => $validated['whatsapp_number'],
+            'recipient_name' => $request->input('recipient_name'),
+            'recipient_address' => $request->input('recipient_address'),
+            'recipient_phone' => $request->input('recipient_phone'),
+            'country' => $request->input('country'),
+            'whatsapp_number' => $request->input('whatsapp_number'),
         ]);
 
-        // Simpan data pesanan (contoh sederhana)
-        // Anda bisa menyesuaikan dengan model pesanan jika sudah ada
-        // Order::create([...]);
-        // Tambahkan item ke dalam pesanan
-        foreach ($validated['products'] as $cartId) {
-            $cartItem = Cart::find($cartId);
+        foreach ($cartItems as $cartItem) {
             OrderItem::create([
                 'order_id' => $order->id,
-                'product_id' => $cartItem->product_id,
+                'product_id' => $cartItem->produk_id,
                 'quantity' => $cartItem->quantity,
                 'price' => $cartItem->price,
             ]);
-            // Hapus item dari keranjang setelah checkout
-            $cartItem->delete();
+
+            // Hapus item dari keranjang
+            \DB::table('cart')->where('id', $cartItem->id)->delete();
         }
 
-        return redirect()->route('allproducts')->with('success', 'Your order has been placed!');
+        return response()->json(['success' => true]);
     }
+
 }
