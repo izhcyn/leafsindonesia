@@ -106,7 +106,6 @@ class shopCartController extends Controller
         session(['cart_total_items' => 0]);
     }
 }
-
 public function updateQuantity(Request $request)
 {
     $cartItemId = $request->input('id');
@@ -117,11 +116,11 @@ public function updateQuantity(Request $request)
         return response()->json(['success' => false, 'message' => 'Invalid data'], 400);
     }
 
-    // Ambil data item keranjang dan harga produk
+    // Ambil data item keranjang
     $cartItem = \DB::table('cart')
         ->join('produk', 'cart.produk_id', '=', 'produk.id')
         ->where('cart.id', $cartItemId)
-        ->select('cart.*', 'produk.harga as price') // Ambil harga produk
+        ->select('cart.*', 'produk.harga as price')
         ->first();
 
     if ($cartItem) {
@@ -148,7 +147,6 @@ public function updateQuantity(Request $request)
 
     return response()->json(['success' => false, 'message' => 'Cart item not found'], 404);
 }
-
 
 
     }

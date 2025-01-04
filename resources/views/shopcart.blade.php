@@ -67,64 +67,106 @@
 
    <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const checkAll = document.getElementById('checkAll');
-        const cartContainer = document.querySelector('.col-lg-8'); // Container untuk semua item di cart
+        const cartContainer = document.querySelector('.col-lg-8'); // Container utama untuk semua item di cart
         const totalDisplay = document.querySelector('.total-price');
 
-        let total = 0;
-
-        // Hitung ulang total harga
+        // Fungsi untuk menghitung ulang total harga
         function updateTotal() {
             const itemCheckboxes = document.querySelectorAll('.item-check');
-            total = Array.from(itemCheckboxes).reduce((sum, checkbox) => {
+            let total = 0;
+
+            itemCheckboxes.forEach((checkbox) => {
                 if (checkbox.checked) {
                     const itemRow = checkbox.closest('[data-item-id]');
                     const price = parseFloat(itemRow.querySelector('.fw-bold').textContent.replace('$', ''));
                     const quantity = parseInt(itemRow.querySelector('.quantity-input').value);
-                    return sum + price * quantity;
+                    total += price * quantity;
                 }
-                return sum;
-            }, 0);
+            });
 
             totalDisplay.textContent = `$${total.toFixed(2)}`;
         }
 
-        // Delegasi event untuk semua interaksi di cart
+        // Delegasi event untuk tombol tambah/kurang dan quantity input
         cartContainer.addEventListener('click', function (event) {
-            // Handle tombol tambah/kurang
             if (event.target.classList.contains('qty-increase') || event.target.classList.contains('qty-decrease')) {
                 const isIncrease = event.target.classList.contains('qty-increase');
-                const quantityInput = event.target.closest('[data-item-id]').querySelector('.quantity-input');
+                const itemRow = event.target.closest('[data-item-id]');
+                const cartItemId = itemRow.dataset.itemId; // ID dari item di keranjang
+                const quantityInput = itemRow.querySelector('.quantity-input');
                 let quantity = parseInt(quantityInput.value);
 
                 // Update quantity
-                quantity = isIncrease ? quantity + 1 : Math.max(1, quantity - 1); // Tidak boleh kurang dari 1
+                quantity = isIncrease ? quantity + 1 : Math.max(1, quantity - 1);
                 quantityInput.value = quantity;
 
-                // Update total langsung
-                updateTotal();
+                // Kirim perubahan ke server via AJAX
+                fetch("{{ route('cart.updateQuantity') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        id: cartItemId,
+                        quantity: quantity
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update total harga
+                        updateTotal();
+                    } else {
+                        alert('Failed to update cart: ' + data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
             }
+        });
 
-            // Handle checkbox perubahan (Check/Uncheck individual)
-            if (event.target.classList.contains('item-check')) {
-                updateTotal();
+        // Delegasi untuk quantity input langsung
+        cartContainer.addEventListener('input', function (event) {
+            if (event.target.classList.contains('quantity-input')) {
+                const itemRow = event.target.closest('[data-item-id]');
+                const cartItemId = itemRow.dataset.itemId;
+                const quantity = parseInt(event.target.value);
+
+                if (quantity > 0) {
+                    fetch("{{ route('cart.updateQuantity') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            id: cartItemId,
+                            quantity: quantity
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Update total harga
+                            updateTotal();
+                        } else {
+                            alert('Failed to update cart: ' + data.message);
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                } else {
+                    event.target.value = 1;
+                }
             }
         });
 
         // Event listener untuk "Check All/Uncheck All"
-        checkAll.addEventListener('change', function () {
+        document.getElementById('checkAll').addEventListener('change', function () {
             const isChecked = this.checked;
             document.querySelectorAll('.item-check').forEach((checkbox) => {
                 checkbox.checked = isChecked;
             });
             updateTotal();
-        });
-
-        // Event listener untuk input langsung pada quantity
-        cartContainer.addEventListener('input', function (event) {
-            if (event.target.classList.contains('quantity-input')) {
-                updateTotal();
-            }
         });
 
         // Inisialisasi total harga saat halaman dimuat

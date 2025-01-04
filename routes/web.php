@@ -61,7 +61,7 @@ Route::get('/add-to-cart/{id}', [shopCartController::class, 'addToCart'])->name(
 Route::get('/shopcart', [shopCartController::class, 'viewCart'])->name('shopcart');
 Route::patch('update-cart', [shopCartController::class, 'update'])->name('update.cart');
 Route::post('/shopcart/update-quantity', [shopCartController::class, 'updateQuantity'])->name('cart.updateQuantity');
-Route::post('/cart/updateQuantity', [ShopCartController::class, 'updateQuantity'])->name('cart.updateQuantity');
+Route::post('/cart/update-quantity', [shopCartController::class, 'updateQuantity'])->name('cart.updateQuantity');
 
 
 
