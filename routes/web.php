@@ -13,6 +13,7 @@ use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\CheckoutController;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\GenusController;
 
 
 /*
@@ -68,11 +69,19 @@ Route::middleware(['role:admin'])->group(function () {
     Route::get('/admin/add-product', [ProductController::class, 'create'])->name('add.product');
     Route::post('/admin/add-product', [ProductController::class, 'store'])->name('store.product');
     Route::get('/admin/listproduct',  [ProductController::class, 'showProduct']) ->name('listproduct');
-    Route::get('admin/edit-product', [ProductController::class, 'EditProduk'])->name('edit.product');
-    Route::get('/admin/genus', [ProductController::class, 'listGenus'])->name('genus');
+    Route::get('/admin/genus', [GenusController::class, 'listGenus'])->name('genus');
     Route::get('/weldone', function () {
         return view('weldone');
     })->name('weldone');
+    Route::get('/produk/{id}/edit', [ProductController::class, 'edit'])->name('edit.product');
+    Route::put('/produk/{id}', [ProductController::class, 'update'])->name('update.product');
+    Route::delete('/produk/{id}', [ProductController::class, 'destroy'])->name('destroy.product');
+    Route::get('/genus/{id}/edit', [GenusController::class, 'edit'])->name('genus.edit');
+    Route::get('/admin/add-genus', [GenusController::class, 'create'])->name('genus.create');
+    Route::post('/admin/add-genus', [GenusController::class, 'store'])->name('genus.store');
+    Route::delete('/genus/{id}', [GenusController::class, 'destroy'])->name('genus.destroy');
+    Route::put('/genus/{id}', [GenusController::class, 'update'])->name('genus.update');
+
 });
 Route::get('/update-cart-total-items', function () {
     $totalItems = session('cart_total_items', 0);

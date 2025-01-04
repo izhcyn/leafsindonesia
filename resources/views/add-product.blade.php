@@ -16,7 +16,7 @@
             <label for="nama" class="form-label fw-bold">Judul Produk</label>
             <input type="text" class="form-control" id="nama" name="nama" maxlength="100" required>
         </div>
-        <div class="row ">
+        <div class="row">
             <div class="col">
                 <div class="mb-3">
                     <label for="image" class="form-label fw-bold">Gambar Thumbnail</label>
@@ -25,23 +25,27 @@
             </div>
             <div class="col">
                 <div class="mb-3">
-                    <label for="image" class="form-label">Gambar lainnya</label>
-                    <input type="file" class="form-control" id="image" name="image" required>
+                    <label for="image_2" class="form-label">Gambar lainnya</label>
+                    <input type="file" class="form-control" id="image_2" name="image_2">
                 </div>
             </div>
             <div class="col">
                 <div class="mb-3">
-                    <label for="image" class="form-label">Gambar lainnya</label>
-                    <input type="file" class="form-control" id="image" name="image" required>
+                    <label for="image_3" class="form-label">Gambar lainnya</label>
+                    <input type="file" class="form-control" id="image_3" name="image_3">
                 </div>
             </div>
-
         </div>
-
         <div class="mb-3">
             <label for="genus" class="form-label fw-bold">Genus</label>
-            <input type="text" class="form-control" id="genus" name="genus" maxlength="100" required>
+            <select class="form-select" id="genus" name="genus" required>
+                <option value="">Pilih Genus</option>
+                @foreach ($genusList as $genus)
+                    <option value="{{ $genus->name }}">{{ $genus->name }}</option>
+                @endforeach
+            </select>
         </div>
+
         <div class="mb-3">
             <label for="ukuran" class="form-label fw-bold">Ukuran</label>
             <select class="form-select" id="ukuran" name="ukuran">

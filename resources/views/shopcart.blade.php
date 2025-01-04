@@ -1,13 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container" style="height: 60vh; margin-top:100px; ">
+<div class="container" style="height: 60vh; margin-top:100px;">
    <div class="row">
       <div class="col-2 pt-3">
         <a href="{{ route('allproducts') }}">
-        <button class="btn py-1 px-4 text-dark"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+        <button class="btn py-1 px-4 text-dark">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
-          </svg><span> Back </span></button>
+          </svg><span> Back </span>
+        </button>
         </a>
       </div>
    </div>
@@ -45,13 +47,8 @@
             <div class="summary-box card p-3">
                <h4>Summary</h4>
                <div class="d-flex justify-content-between">
-                  <span>Sub Total</span>
-                  <span></span>
-               </div>
-               <hr>
-               <div class="d-flex justify-content-between fw-bold">
-                <span>Estimated Sub Total</span>
-                <span>${{ $total }}</span>
+                  <span>Estimated Sub Total</span>
+                  <span class="fw-bold total-price">${{ $total }}</span>
                </div>
                <div class="form-check mt-3">
                 <input class="form-check-input" type="checkbox" id="giftCheckbox">
@@ -64,25 +61,26 @@
          </div>
       </div>
    </div>
-@else
-   <div class="alert alert-warning">Your cart is empty.</div>
-@endif
+   @else
+      <div class="alert alert-warning">Your cart is empty.</div>
+   @endif
 
-<script>
+   <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const itemCheckboxes = document.querySelectorAll('.item-check');
         const checkAll = document.getElementById('checkAll');
-        const totalDisplay = document.querySelector('.summary-box .fw-bold span');
+        const cartContainer = document.querySelector('.col-lg-8'); // Container untuk semua item di cart
+        const totalDisplay = document.querySelector('.total-price');
 
         let total = 0;
 
-        // Set semua checkbox tidak tercentang dan hitung ulang total harga
+        // Hitung ulang total harga
         function updateTotal() {
+            const itemCheckboxes = document.querySelectorAll('.item-check');
             total = Array.from(itemCheckboxes).reduce((sum, checkbox) => {
                 if (checkbox.checked) {
                     const itemRow = checkbox.closest('[data-item-id]');
                     const price = parseFloat(itemRow.querySelector('.fw-bold').textContent.replace('$', ''));
-                    const quantity = parseInt(itemRow.querySelector('input[type="number"]').value);
+                    const quantity = parseInt(itemRow.querySelector('.quantity-input').value);
                     return sum + price * quantity;
                 }
                 return sum;
@@ -91,79 +89,47 @@
             totalDisplay.textContent = `$${total.toFixed(2)}`;
         }
 
-        // Event listener untuk setiap checkbox
-        itemCheckboxes.forEach((checkbox) => {
-            checkbox.checked = false; // Tidak tercentang saat halaman dimuat
-            checkbox.addEventListener('change', updateTotal);
+        // Delegasi event untuk semua interaksi di cart
+        cartContainer.addEventListener('click', function (event) {
+            // Handle tombol tambah/kurang
+            if (event.target.classList.contains('qty-increase') || event.target.classList.contains('qty-decrease')) {
+                const isIncrease = event.target.classList.contains('qty-increase');
+                const quantityInput = event.target.closest('[data-item-id]').querySelector('.quantity-input');
+                let quantity = parseInt(quantityInput.value);
+
+                // Update quantity
+                quantity = isIncrease ? quantity + 1 : Math.max(1, quantity - 1); // Tidak boleh kurang dari 1
+                quantityInput.value = quantity;
+
+                // Update total langsung
+                updateTotal();
+            }
+
+            // Handle checkbox perubahan (Check/Uncheck individual)
+            if (event.target.classList.contains('item-check')) {
+                updateTotal();
+            }
         });
 
         // Event listener untuk "Check All/Uncheck All"
         checkAll.addEventListener('change', function () {
             const isChecked = this.checked;
-            itemCheckboxes.forEach((checkbox) => {
+            document.querySelectorAll('.item-check').forEach((checkbox) => {
                 checkbox.checked = isChecked;
             });
             updateTotal();
         });
 
-        // Inisialisasi total harga
+        // Event listener untuk input langsung pada quantity
+        cartContainer.addEventListener('input', function (event) {
+            if (event.target.classList.contains('quantity-input')) {
+                updateTotal();
+            }
+        });
+
+        // Inisialisasi total harga saat halaman dimuat
         updateTotal();
     });
-    </script>
-
-
-<script>
-document.querySelectorAll('.qty-increase, .qty-decrease').forEach(function(button) {
-  button.addEventListener('click', function() {
-    const isIncrease = this.classList.contains('qty-increase');
-    const cartItemId = this.dataset.cartItemId; // Ensure you have data-cart-item-id on buttons
-    const quantityInput = this.closest('.cart-item').querySelector('.quantity-input');
-    let quantity = parseInt(quantityInput.value);
-
-    // Update quantity based on button clicked
-    if (isIncrease) {
-      quantity++;
-    } else {
-      quantity--;
-    }
-
-    // Validation (quantity cannot be less than 1)
-    if (quantity < 1) {
-      alert('Quantity cannot be less than 1');
-      return;
-    }
-
-    // Update database through AJAX (replace with your actual update route)
-    fetch("{{ route('cart.updateQuantity', $item->id) }}", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-      },
-      body: JSON.stringify({
-        id: cartItemId,
-        quantity: quantity,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          // Update UI if successful
-          quantityInput.value = quantity;
-          // Update subtotal and total based on the data returned from the server
-          this.closest('.cart-item').querySelector('.subtotal').innerText = `$${data.subTotal}`;
-          document.querySelector('.total-price').innerText = `$${data.total}`;
-        } else {
-          alert(data.message || ' Failed to update cart');
-        }
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-        alert('Something went wrong. Please try again.');
-      });
-  });
-});
- </script>
-
+</script>
 
 @endsection
