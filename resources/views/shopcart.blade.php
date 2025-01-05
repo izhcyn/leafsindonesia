@@ -107,13 +107,13 @@
                     const isIncrease = event.target.classList.contains('qty-increase');
                     const itemRow = event.target.closest('[data-item-id]');
                     const quantityInput = itemRow.querySelector('.quantity-input');
-                    let quantity = parseInt(quantityInput.value) || 1;
+                    let quantity = parseInt(quantityInput.value) || 0;
 
                     // Update kuantitas produk dengan increment 1
                     if (isIncrease) {
                         quantity = quantity++;
                     } else {
-                        quantity = Math.max(1, quantity - 1);
+                        quantity = Math.max(1, quantity--);
                     }
 
                     quantityInput.value = quantity;
