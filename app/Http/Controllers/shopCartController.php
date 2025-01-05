@@ -89,66 +89,80 @@ class shopCartController extends Controller
     }
 
     public function updateCartTotalItems()
-{
-    // Pastikan user sudah login
-    if (Auth::check()) {
+    {
+        // Pastikan user sudah login
+        if (Auth::check()) {
+            $userId = Auth::id();
+
+            // Hitung total quantity dari semua item di keranjang user
+            $totalItems = \DB::table('cart')
+                ->where('user_id', $userId)
+                ->sum('quantity');
+
+            // Simpan jumlah total item ke sesi
+            session(['cart_total_items' => $totalItems]);
+        } else {
+            // Jika user belum login, set total item ke 0
+            session(['cart_total_items' => 0]);
+        }
+    }
+    public function updateQuantity(Request $request)
+    {
+        $cartItemId = $request->input('id');
+        $newQuantity = $request->input('quantity');
+
+        // Validasi input
+        if (!$cartItemId || !$newQuantity || $newQuantity < 1) {
+            return response()->json(['success' => false, 'message' => 'Invalid data'], 400);
+        }
+
+        // Ambil data item keranjang
+        $cartItem = \DB::table('cart')
+            ->join('produk', 'cart.produk_id', '=', 'produk.id')
+            ->where('cart.id', $cartItemId)
+            ->select('cart.*', 'produk.harga as price')
+            ->first();
+
+        if ($cartItem) {
+            // Update quantity di tabel cart
+            \DB::table('cart')
+                ->where('id', $cartItemId)
+                ->update(['quantity' => $newQuantity, 'updated_at' => now()]);
+
+            // Hitung ulang subtotal untuk item ini
+            $subTotal = $cartItem->price * $newQuantity;
+
+            // Hitung ulang total untuk semua item keranjang
+            $total = \DB::table('cart')
+                ->join('produk', 'cart.produk_id', '=', 'produk.id')
+                ->where('cart.user_id', auth()->id())
+                ->sum(\DB::raw('cart.quantity * produk.harga'));
+
+            return response()->json([
+                'success' => true,
+                'subTotal' => $subTotal,
+                'total' => $total,
+            ]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Cart item not found'], 404);
+    }
+
+    public function removeFromCart(Request $request)
+    {
+        $cartItemId = $request->input('id');
         $userId = Auth::id();
 
-        // Hitung total quantity dari semua item di keranjang user
-        $totalItems = \DB::table('cart')
-            ->where('user_id', $userId)
-            ->sum('quantity');
-
-        // Simpan jumlah total item ke sesi
-        session(['cart_total_items' => $totalItems]);
-    } else {
-        // Jika user belum login, set total item ke 0
-        session(['cart_total_items' => 0]);
-    }
-}
-public function updateQuantity(Request $request)
-{
-    $cartItemId = $request->input('id');
-    $newQuantity = $request->input('quantity');
-
-    // Validasi input
-    if (!$cartItemId || !$newQuantity || $newQuantity < 1) {
-        return response()->json(['success' => false, 'message' => 'Invalid data'], 400);
-    }
-
-    // Ambil data item keranjang
-    $cartItem = \DB::table('cart')
-        ->join('produk', 'cart.produk_id', '=', 'produk.id')
-        ->where('cart.id', $cartItemId)
-        ->select('cart.*', 'produk.harga as price')
-        ->first();
-
-    if ($cartItem) {
-        // Update quantity di tabel cart
+        // Hapus item dari cart berdasarkan ID dan user ID
         \DB::table('cart')
             ->where('id', $cartItemId)
-            ->update(['quantity' => $newQuantity, 'updated_at' => now()]);
+            ->where('user_id', $userId)
+            ->delete();
 
-        // Hitung ulang subtotal untuk item ini
-        $subTotal = $cartItem->price * $newQuantity;
+        // Hitung ulang total item di cart
+        $this->updateCartTotalItems();
 
-        // Hitung ulang total untuk semua item keranjang
-        $total = \DB::table('cart')
-            ->join('produk', 'cart.produk_id', '=', 'produk.id')
-            ->where('cart.user_id', auth()->id())
-            ->sum(\DB::raw('cart.quantity * produk.harga'));
-
-        return response()->json([
-            'success' => true,
-            'subTotal' => $subTotal,
-            'total' => $total,
-        ]);
+        return response()->json(['success' => true, 'message' => 'Item removed from cart']);
     }
 
-    return response()->json(['success' => false, 'message' => 'Cart item not found'], 404);
 }
-
-
-    }
-
-

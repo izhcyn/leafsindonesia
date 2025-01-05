@@ -87,6 +87,8 @@ Route::get('/update-cart-total-items', function () {
     $totalItems = session('cart_total_items', 0);
     return response()->json(['total_items' => $totalItems]);
 });
+Route::delete('/cart/remove', [ShopCartController::class, 'removeFromCart'])->name('cart.remove');
+
 
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
