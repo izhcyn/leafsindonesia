@@ -245,6 +245,8 @@
                 const selectedItems = Array.from(document.querySelectorAll('.item-check:checked'))
                     .map((checkbox) => checkbox.closest('[data-item-id]').dataset.itemId);
 
+                console.log('Selected items:', selectedItems); // Debugging
+
                 if (selectedItems.length === 0) {
                     alert('Please select at least one item to checkout.');
                     return;
@@ -257,10 +259,20 @@
                             'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         },
                         body: JSON.stringify({
-                            selectedItems: selectedItems
+                            selectedItems: selectedItems,
+                            recipient_name: "Test Name",
+                            recipient_address: "Test Address",
+                            recipient_phone: "123456789",
+                            country: "Indonesia",
+                            whatsapp_number: "987654321"
                         })
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error ${response.status}`);
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         if (data.success) {
                             window.location.href = "{{ route('checkout.index') }}";
@@ -270,7 +282,6 @@
                     })
                     .catch(error => console.error('Error:', error));
             });
-
             updateTotal();
         });
     </script>

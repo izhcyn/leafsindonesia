@@ -15,13 +15,19 @@ class Cart extends Model
 
     protected $fillable = [
         'user_id',
-        'product_id',
+        'produk_id',
         'quantity',
         'price',
+        'status',
     ];
 
     public function product()
     {
         return $this->belongsTo(Product::class);
     }
+    public function produk()
+{
+    return $this->belongsTo(Produk::class, 'produk_id');
+}
+
 }

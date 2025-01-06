@@ -74,7 +74,7 @@ class shopCartController extends Controller
             ->select(
                 'cart.*',
                 'produk.nama as name',
-                'produk.harga as price',
+                'produk.price as price',
                 'produk.image',
                 'produk.genus',
                 'produk.ukuran'
@@ -120,7 +120,7 @@ class shopCartController extends Controller
         $cartItem = \DB::table('cart')
             ->join('produk', 'cart.produk_id', '=', 'produk.id')
             ->where('cart.id', $cartItemId)
-            ->select('cart.*', 'produk.harga as price')
+            ->select('cart.*', 'produk.price as price')
             ->first();
 
         if ($cartItem) {
@@ -136,7 +136,7 @@ class shopCartController extends Controller
             $total = \DB::table('cart')
                 ->join('produk', 'cart.produk_id', '=', 'produk.id')
                 ->where('cart.user_id', auth()->id())
-                ->sum(\DB::raw('cart.quantity * produk.harga'));
+                ->sum(\DB::raw('cart.quantity * produk.price'));
 
             return response()->json([
                 'success' => true,

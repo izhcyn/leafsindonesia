@@ -5,14 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-
 class OrderItem extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'order_id',
-        'product_id',
+        'produK_id',
         'quantity',
         'price',
     ];
@@ -21,9 +20,9 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Order::class);
     }
+    public function produk()
+{
+    return $this->belongsTo(Produk::class, 'produk_id');
+}
 
-    public function product()
-    {
-        return $this->belongsTo(Product::class);
-    }
 }

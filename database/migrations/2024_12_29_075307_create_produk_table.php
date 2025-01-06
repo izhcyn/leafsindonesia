@@ -20,7 +20,7 @@ class CreateProdukTable extends Migration
             $table->string('ukuran', 50)->nullable();
             $table->string('deskripsi', 100)->nullable();
             $table->string('nama', 100);
-            $table->decimal('harga', 10, 2);
+            $table->decimal('price', 10, 2);
             $table->enum('label', ['hot_item', 'last_stock', 'only_one'])->nullable();
             $table->integer('stock');
             $table->timestamps();

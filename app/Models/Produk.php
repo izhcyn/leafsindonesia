@@ -9,7 +9,7 @@ class Produk extends Model
 {
     use HasFactory;
 
-    protected $table = 'Produk'; // Pastikan ini sesuai dengan nama tabel di database.
+    protected $table = 'produk'; // Pastikan sesuai dengan nama tabel di database.
 
     /**
      * Kolom yang dapat diisi secara massal (mass assignable).
@@ -22,8 +22,32 @@ class Produk extends Model
         'ukuran',
         'deskripsi',
         'nama',
-        'harga',
+        'price',
         'label',
         'stock',
     ];
+
+    /**
+     * Relasi dengan Cart.
+     */
+    public function carts()
+    {
+        return $this->hasMany(Cart::class, 'produk_id');
+    }
+
+    /**
+     * Relasi dengan OrderItem.
+     */
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class, 'produk_id');
+    }
+
+    /**
+     * Ambil harga valid dengan fallback jika null.
+     */
+    public function getValidPriceAttribute()
+    {
+        return $this->harga ?? 0; // Jika harga null, kembalikan 0.
+    }
 }

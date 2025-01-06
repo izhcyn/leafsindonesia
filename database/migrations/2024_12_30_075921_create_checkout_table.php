@@ -31,6 +31,7 @@ class CreateCheckoutTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('checkouts');
+        Schema::dropIfExists('checkout');
     }
+
 }

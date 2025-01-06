@@ -45,7 +45,7 @@ class ProductController extends Controller
             'ukuran' => 'required|string|max:50',
             'deskripsi' => 'required|string|max:255',
             'nama' => 'required|string|max:100',
-            'harga' => 'required|numeric',
+            'price' => 'required|numeric',
             'label' => 'nullable|in:hot_item,last_stock,only_one',
             'stock' => 'required|integer',
         ]);
@@ -66,7 +66,7 @@ class ProductController extends Controller
             'ukuran' => $request->ukuran,
             'deskripsi' => $request->deskripsi,
             'nama' => $request->nama,
-            'harga' => $request->harga,
+            'price' => $request->price,
             'label' => $request->label,
             'stock' => $request->stock,
         ]);
@@ -93,7 +93,7 @@ public function update(Request $request, $id)
         'genus' => 'required|string|max:100',
         'ukuran' => 'required|string|max:50',
         'deskripsi' => 'required|string|max:255',
-        'harga' => 'required|numeric',
+        'price' => 'required|numeric',
         'stock' => 'required|integer',
         'label' => 'nullable|in:hot_item,last_stock,only_one',
         'image' => 'nullable|image|max:2048',
@@ -133,7 +133,7 @@ public function update(Request $request, $id)
     $produk->genus = $request->genus;
     $produk->ukuran = $request->ukuran;
     $produk->deskripsi = $request->deskripsi;
-    $produk->harga = $request->harga;
+    $produk->price = $request->price;
     $produk->stock = $request->stock;
     $produk->label = $request->label;
 
