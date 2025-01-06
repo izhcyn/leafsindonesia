@@ -245,42 +245,14 @@
                 const selectedItems = Array.from(document.querySelectorAll('.item-check:checked'))
                     .map((checkbox) => checkbox.closest('[data-item-id]').dataset.itemId);
 
-                console.log('Selected items:', selectedItems); // Debugging
-
                 if (selectedItems.length === 0) {
                     alert('Please select at least one item to checkout.');
                     return;
                 }
 
-                fetch("{{ route('checkout.store') }}", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            selectedItems: selectedItems,
-                            recipient_name: "Test Name",
-                            recipient_address: "Test Address",
-                            recipient_phone: "123456789",
-                            country: "Indonesia",
-                            whatsapp_number: "987654321"
-                        })
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.success) {
-                            window.location.href = "{{ route('checkout.index') }}";
-                        } else {
-                            alert('Failed to proceed to checkout: ' + data.message);
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
+                // Arahkan ke halaman checkout dengan query string
+                const queryString = selectedItems.map(id => `selectedItems[]=${id}`).join('&');
+                window.location.href = `{{ route('checkout.index') }}?${queryString}`;
             });
             updateTotal();
         });

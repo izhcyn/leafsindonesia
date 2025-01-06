@@ -22,6 +22,7 @@
                     style="color: red !important; display: inline; float: none;">*</span>
 
                 <select id="country" name="country" class="form-control">
+                    <option value="">--- Select Your Country</option>
                     <option value="Afghanistan">Afghanistan</option>
                     <option value="Åland Islands">Åland Islands</option>
                     <option value="Albania">Albania</option>
