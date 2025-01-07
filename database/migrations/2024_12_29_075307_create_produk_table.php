@@ -18,11 +18,7 @@ class CreateProdukTable extends Migration
             $table->binary('image')->nullable(); // Ganti longBlob() dengan binary()
             $table->string('genus', 100)->nullable();
             $table->string('ukuran', 50)->nullable();
-<<<<<<< HEAD
             $table->string('deskripsi', 255)->nullable();
-=======
-            $table->string('deskripsi')->nullable();
->>>>>>> 203ad868876a444f1ec0d99681f1f49f71d96d5f
             $table->string('nama', 100);
             $table->decimal('price', 10, 2);
             $table->enum('label', ['hot_item', 'last_stock', 'only_one'])->nullable();
