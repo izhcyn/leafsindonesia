@@ -62,10 +62,6 @@
                             </div>
                             <span style="color: red; font-weight:bold;">Price does not include shipping
                                 costs.</span>
-                            <div class="form-check mt-3">
-                                <input class="form-check-input" type="checkbox" id="giftCheckbox">
-                                <label class="form-check-label" for="giftCheckbox">Send as a gift</label>
-                            </div>
                             <a href="{{ route('checkout.index') }}">
                                 <button class="btn-checkout mt-3 border-3 w-100" style="background-color: orange;">Check out
                                     now!</button>

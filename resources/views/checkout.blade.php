@@ -304,10 +304,37 @@
                             costs.</span>
                     </div>
                 </div>
+                <div class="form-check">
+                    <input type="hidden" name="send_as_gift" value="0">
+                    <input class="form-check-input" type="checkbox" id="giftCheckbox" name="send_as_gift"
+                        value="1">
+                    <label class="form-check-label" for="giftCheckbox">Send as a gift</label>
+                </div>
+                <div id="giftMessageContainer" class="text-message" style="display: none;">
+                    <label for="giftMessage" class="form-label">Write your gift message:</label>
+                    <textarea class="form-control" id="giftMessage" name="gift_message" rows="3"
+                        placeholder="Enter your gift message here..."></textarea>
+                </div>
                 <button type="submit" class="btn btn-primary">Place Order</button>
             </form>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const giftCheckbox = document.getElementById('giftCheckbox');
+                const giftMessageContainer = document.getElementById('giftMessageContainer');
+
+                // Tambahkan event listener untuk checkbox
+                giftCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        giftMessageContainer.style.display = 'block'; // Tampilkan input teks
+                    } else {
+                        giftMessageContainer.style.display = 'none'; // Sembunyikan input teks
+                        document.getElementById('giftMessage').value = ''; // Reset pesan gift
+                    }
+                });
+            });
+        </script>
         <script>
             function handlePlaceOrder(event) {
                 event.preventDefault();
@@ -324,7 +351,6 @@
                     cancelButtonText: "Cancel"
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Kirim data form ke server
                         const formData = new FormData(event.target);
 
                         fetch('{{ route('checkout.store') }}', {
@@ -363,4 +389,29 @@
                 });
             }
         </script>
+        <style>
+            .form-check-input {
+                width: 25px;
+                height: 25px;
+            }
+
+            .form-check-label {
+                font-size: 1.2rem;
+                font-weight: bold;
+                margin-left: 10px;
+            }
+
+            .form-check {
+                margin-top: 2rem;
+                margin-bottom: 2rem
+            }
+
+            .text-message {
+                margin-bottom: 2rem
+            }
+
+            .text-message label {
+                font-weight: 600;
+            }
+        </style>
     @endsection
