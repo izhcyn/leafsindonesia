@@ -60,6 +60,8 @@
                                 <span>Estimated Sub Total</span>
                                 <span class="fw-bold total-price">${{ $total }}</span>
                             </div>
+                            <span style="color: red; font-weight:bold;">Price does not include shipping
+                                costs.</span>
                             <div class="form-check mt-3">
                                 <input class="form-check-input" type="checkbox" id="giftCheckbox">
                                 <label class="form-check-label" for="giftCheckbox">Send as a gift</label>
@@ -242,6 +244,7 @@
             checkoutButton.addEventListener('click', function(event) {
                 event.preventDefault();
 
+                // Ambil ID item yang dicentang
                 const selectedItems = Array.from(document.querySelectorAll('.item-check:checked'))
                     .map((checkbox) => checkbox.closest('[data-item-id]').dataset.itemId);
 
@@ -254,6 +257,7 @@
                 const queryString = selectedItems.map(id => `selectedItems[]=${id}`).join('&');
                 window.location.href = `{{ route('checkout.index') }}?${queryString}`;
             });
+
             updateTotal();
         });
     </script>

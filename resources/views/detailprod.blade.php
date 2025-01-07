@@ -67,9 +67,11 @@
                         </div>
 
                     </div>
-                    <div class="col ">
-                        <a class="btn w-100 " style="background-color: orange" href=""> Buy Now</a>
+                    <div class="col">
+                        <a class="btn w-100" style="background-color: orange"
+                            href="{{ route('buy.now', $produk->id) }}">Buy Now</a>
                     </div>
+
                 </div>
                 <h3 class="py-3"> Description </h3>
                 <p class="text-muted"> {{ $produk->deskripsi }} </p>

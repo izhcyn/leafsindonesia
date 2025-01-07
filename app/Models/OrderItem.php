@@ -11,18 +11,21 @@ class OrderItem extends Model
 
     protected $fillable = [
         'order_id',
-        'produK_id',
+        'produk_id',
         'quantity',
         'price',
+        'recipient_name',
+        'product_name',
+        'total',
     ];
 
     public function order()
     {
         return $this->belongsTo(Order::class);
     }
-    public function produk()
-{
-    return $this->belongsTo(Produk::class, 'produk_id');
-}
 
+    public function produk()
+    {
+        return $this->belongsTo(Produk::class, 'produk_id');
+    }
 }

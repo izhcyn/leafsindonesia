@@ -11,10 +11,14 @@ class CreateOrderItemsTable extends Migration
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained()->onDelete('cascade');
+            $table->string('recipient_name');  // Nama penerima
             $table->foreignId('produk_id')->constrained('produk')->onDelete('cascade');
+            $table->string('product_name');    // Nama produk
             $table->integer('quantity');
             $table->decimal('price', 10, 2);
+            $table->decimal('total', 10, 2);
             $table->timestamps();
+
         });
 
     }

@@ -15,7 +15,6 @@ class CreateOrdersTable extends Migration
             $table->text('recipient_address');
             $table->string('recipient_phone');
             $table->string('country');
-            $table->string('whatsapp_number')->nullable();
             $table->timestamps();
         });
     }

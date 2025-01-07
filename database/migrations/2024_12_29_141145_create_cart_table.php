@@ -19,8 +19,8 @@ class CreateCartTable extends Migration
             $table->unsignedInteger('produk_id'); // Foreign Key to produk table
             $table->unsignedInteger('quantity'); // Quantity
             $table->enum('status', ['pending', 'checked_out', 'canceled'])->default('pending'); // Status
+            $table->decimal('price', 10, 2)->default('0');
             $table->timestamps(); // Created_at and Updated_at
-
             // Indexes
             $table->index('produk_id');
             $table->index('user_id');

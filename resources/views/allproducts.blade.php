@@ -122,6 +122,7 @@
                                         <img src="{{ asset('storage/' . $produk->image) }}" height="380vh"
                                             style="object-fit: cover; border-radius:10px !important;" class="card-img-top"
                                             alt="{{ $produk->nama }}">
+
                                         @if ($produk->label)
                                             <div class="product-label">
                                                 <div class="{{ strtolower($produk->label) }}">
@@ -129,6 +130,7 @@
                                                 </div>
                                             </div>
                                         @endif
+
                                         <div class="card-body" style="padding-left: 0px !important;">
                                             <div class="row mb-1">
                                                 <div class="col pri-color ">{{ $produk->genus }}</div>
@@ -141,112 +143,27 @@
                                     </div>
                                 </div>
                             </a>
+
+                            <!-- Add to Cart Button with Icon -->
+                            <div class="col mt-2">
+                                @auth
+                                    <a href="{{ route('add.to.cart', $produk->id) }}"
+                                        class="btn w-100 text-dark btn-add-to-cart" role="button">
+                                        <i class="bi bi-cart-plus"></i> Add to Cart
+                                    </a>
+                                @else
+                                    <a href="{{ route('login') }}" class="btn w-100 text-dark btn-add-to-cart">
+                                        <i class="bi bi-cart-plus"></i> Add to Cart
+                                    </a>
+                                @endauth
+                            </div>
                         </div>
                     @endforeach
                 </div>
             </div>
-
-
-
         </div>
     </div>
     </div>
-
-
-
-
-
-
-
-    <!-- Footer -->
-    {{-- <footer class="foots text-center text-lg-start text-muted">
-
-  <section class="d-flex justify-content-center justify-content-lg-between">
-
-  </section>
-
-
-
-  <section class="">
-    <div class="container text-center text-md-start mt-5">
-
-      <div class="row mt-3">
-
-        <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
-
-          <h6 class="text-uppercase fw-bold mb-4">
-           <img src="Aset/image/logo_yellow.png" width="100vw">
-          </h6>
-          <p>
-            Here you can use rows and columns to organize your footer content. Lorem ipsum
-            dolor sit amet, consectetur adipisicing elit.
-          </p>
-        </div>
-
-
-        <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
-
-          <h6 class="text-uppercase fw-bold mb-4">
-            Products
-          </h6>
-          <p>
-            <a href="#!" class="text-reset">Angular</a>
-          </p>
-          <p>
-            <a href="#!" class="text-reset">React</a>
-          </p>
-          <p>
-            <a href="#!" class="text-reset">Vue</a>
-          </p>
-          <p>
-            <a href="#!" class="text-reset">Laravel</a>
-          </p>
-        </div>
-
-        <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
-
-          <h6 class="text-uppercase fw-bold mb-4">
-            Useful links
-          </h6>
-          <p>
-            <a href="#!" class="text-reset">Pricing</a>
-          </p>
-          <p>
-            <a href="#!" class="text-reset">Settings</a>
-          </p>
-          <p>
-            <a href="#!" class="text-reset">Orders</a>
-          </p>
-          <p>
-            <a href="#!" class="text-reset">Help</a>
-          </p>
-        </div>
-
-
-
-        <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
-          <h6 class="text-uppercase fw-bold mb-4">Contact</h6>
-          <p><i class="fas fa-home me-3"></i> New York, NY 10012, US</p>
-          <p>
-            <i class="fas fa-envelope me-3"></i>
-            info@example.com
-          </p>
-          <p><i class="fas fa-phone me-3"></i> + 01 234 567 88</p>
-          <p><i class="fas fa-print me-3"></i> + 01 234 567 89</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
-    © 2021 Copyright:
-    <a class="text-reset fw-bold" href="https://mdbootstrap.com/">MDBootstrap.com</a>
-  </div>
-</footer> --}}
-
-
-
-
 
     <!-- Navbar -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -355,7 +272,7 @@
                 var query = $(this).val().toLowerCase(); // Get the input value and convert to lowercase
                 $('.genusdata label').filter(function() {
                     $(this).toggle($(this).text().toLowerCase().indexOf(query) > -
-                    1); // Show/hide based on match
+                        1); // Show/hide based on match
                 });
             });
         });
@@ -570,6 +487,29 @@
             width: 100%;
             flex: 0 0 33.33%;
             box-sizing: border-box;
+        }
+
+        .btn-add-to-cart {
+            background-color: #f8f9fa;
+            /* Default background color */
+            border: 1px solid #dee2e6;
+            /* Border color */
+            transition: all 0.3s ease;
+            /* Smooth transition for hover effect */
+        }
+
+        .btn-add-to-cart:hover {
+            background-color: #ff9800;
+            /* Background color when hovered */
+            color: white;
+            /* Text color when hovered */
+            border-color: #e67e22;
+            /* Border color when hovered */
+        }
+
+        .btn-add-to-cart i {
+            margin-right: 8px;
+            /* Add some space between the icon and the text */
         }
     </style>
 @endsection
