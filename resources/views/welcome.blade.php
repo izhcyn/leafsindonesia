@@ -2,7 +2,21 @@
 @extends('layouts.app')
 
    @section('content')
-   
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+
     <div class="container-fluid p-0" style="height: 60vh; margin-top:100px; ">
       <div class="slider">
         <div class="slider__slide slider__slide--active" data-slide="1">
@@ -21,7 +35,7 @@
                   <a class="go-to-next arrow">next</a>
                 </div>
               </div>
-             
+
             </div>
           </div>
         </div>
@@ -31,7 +45,7 @@
           </div>
           <div class="slider__inner">
             <div class="slider__content">
-              <h1 >Exclusive Discounts:</h1><br> <h2 class="pri-color">Save 15% on your first purchase with code <b>LEAF15.</b> </h2> 
+              <h1 >Exclusive Discounts:</h1><br> <h2 class="pri-color">Save 15% on your first purchase with code <b>LEAF15.</b> </h2>
               <div class="row mt-5 d-flex justify-content-start">
                 <div class="col-auto ">
                   <a href="" class="btn-pri fw-bold">Claim Now!</a>
@@ -42,7 +56,7 @@
                 </div>
               </div>
             </div>
-            
+
           </div>
         </div>
         <div class="slider__slide" data-slide="3">
@@ -54,12 +68,12 @@
               <h1 class="pri-color">Have questions? </h1>
               <br>
                 <h2> We're here to help you find the perfect leaves!</h2>
-                
+
                 <div class="row mt-5 d-flex justify-content-start">
                   <div class="col-auto ">
                     <a href="" class="btn-pri fw-bold">Contact Us</a>
                   </div>
-  
+
                   <div class="col-auto ">
                     <a class="go-to-next arrow">next</a>
                   </div>
@@ -70,10 +84,10 @@
         <div class="slider__indicators"></div>
     </div>
     </div>
-    
+
 
     <div class="container-fluid content pt-5">
-      
+
         <h3 class="fw-bold fs-1 pri-color">Anthurium Recommendations</h3>
         <div class="row pt-3">
           <div class="col col-lg-6 col-12">
@@ -85,7 +99,7 @@
                   <p class="card-text-hide text-light">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
                    <button class="btn py-1 px-4">beli</button>
                 </div>
-                
+
               </div>
             </div>
           </div>
@@ -99,7 +113,7 @@
                    <button class="btn py-1 px-4">beli</button>
                 </div>
               </div>
-              
+
           </div>
           <div class="row">
             <div class="col-6">
@@ -140,7 +154,7 @@
         <div class="carousel-inner mb-5">
           <div class="carousel-item active">
             <div class="row ">
-              
+
               <div class="col d-flex justify-content-center ">
                 <a  href="#"><img alt="" src="../../Aset/image/header4.jpg" width="300vw" style="object-fit: cover "></a>
               </div>
@@ -150,13 +164,13 @@
               <div class="col d-flex justify-content-center ">
                 <a  href="#"><img alt="" src="../../Aset/image/header4.jpg" width="300vw" style="object-fit: cover "></a>
               </div>
-              
-   
-            </div>        
+
+
+            </div>
           </div>
           <div class="carousel-item">
             <div class="row ">
-              
+
               <div class="col d-flex justify-content-center ">
                 <a  href="#"><img alt="" src="../../Aset/image/header4.jpg" width="300vw" style="object-fit: cover "></a>
               </div>
@@ -166,13 +180,13 @@
               <div class="col d-flex justify-content-center ">
                 <a  href="#"><img alt="" src="../../Aset/image/header4.jpg" width="300vw" style="object-fit: cover "></a>
               </div>
-              
-   
-            </div>          
+
+
+            </div>
           </div>
           <div class="carousel-item">
             <div class="row ">
-              
+
               <div class="col d-flex justify-content-center ">
                 <a  href="#"><img alt="" src="../../Aset/image/header4.jpg" width="300vw" style="object-fit: cover "></a>
               </div>
@@ -182,9 +196,9 @@
               <div class="col d-flex justify-content-center ">
                 <a  href="#"><img alt="" src="../../Aset/image/header4.jpg" width="300vw" style="object-fit: cover "></a>
               </div>
-              
-   
-            </div>           
+
+
+            </div>
           </div>
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
@@ -197,8 +211,9 @@
         </button>
       </div>
      </div>
-     
+
      </div>
+
     {{-- <div class="tes" style="height: 100vh; background-image:url('/Aset/image/cover.jpg'); object-fit:cover;">
       <h1 class="p-5 fw-bold" style="color: white"> About Us </h1>
     </div> --}}

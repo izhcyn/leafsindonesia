@@ -24,13 +24,14 @@ class RegisterController extends Controller
         ]);
 
         // Membuat user baru
-        $user = User::create([
+        User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
 
-        // Redirect ke halaman sukses atau login
-        return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan login.');
+        // Redirect ke halaman login dengan pesan sukses
+        return redirect()->route('login')->with('success', 'Registration successful! Please log in.');
     }
+
 }

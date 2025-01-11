@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
+use App\Models\User;
+
 
 class LoginController extends Controller
 {
@@ -22,24 +24,30 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
 
-        // Coba login dengan data yang diberikan
-        if (Auth::attempt($credentials)) {
-            // Regenerasi session untuk keamanan
-            $request->session()->regenerate();
+        // Cek apakah email terdaftar
+        $user = User::where('email', $request->email)->first();
 
-            // Cek apakah user adalah admin
-            if (Auth::user()->role === 'admin') {
-                return redirect()->intended('/weldone');
-            }
-
-            // Redirect ke halaman yang diinginkan setelah login berhasil
-            return redirect()->intended('/welcome');
+        if (!$user) {
+            // Jika email tidak terdaftar
+            return back()->with('error', 'Email not registered. Please sign up.');
         }
 
-        // Jika login gagal, kembali ke halaman login dengan pesan error
-        return back()->withErrors([
-            'email' => 'Email atau password salah.',
-        ])->onlyInput('email');
+        // Cek apakah password sesuai
+        if (!Auth::attempt($credentials)) {
+            // Jika password salah
+            return back()->with('error', 'Incorrect password entered.');
+        }
+
+        // Jika login berhasil, regenerasi session
+        $request->session()->regenerate();
+
+        // Redirect sesuai role
+        session()->flash('success', 'Berhasil login!');
+        if (Auth::user()->role === 'admin') {
+            return redirect()->intended('/weldone');
+        }
+
+        return redirect()->intended('/welcome');
     }
 
     public function logout(Request $request)
